@@ -71,6 +71,8 @@ dependencies {
     implementation("io.insert-koin:koin-android")
     implementation("io.insert-koin:koin-androidx-compose")
 
+    // Glance AppWidget
+    implementation("androidx.glance:glance-appwidget:1.1.1")
     // icons
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
 

@@ -4,6 +4,7 @@ package com.amijul.photowidget.presentation.editor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PhotoWidgetEditorRoot(
     initialMode: PhotoWidgetMode,
+    onSaved: () -> Unit,
     vm: PhotoWidgetViewModel = koinViewModel()
 ) {
     val uiState by vm.uiState.collectAsState()
@@ -35,9 +37,17 @@ fun PhotoWidgetEditorRoot(
         vm.setMode(initialMode)
     }
 
+    // 🔔 Listen for save success events and notify the activity
+    LaunchedEffect(Unit) {
+        vm.saveSuccessEvents.collect {
+            onSaved()
+        }
+    }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(MaterialTheme.colorScheme.background)
     ) {
         when {
@@ -50,6 +60,7 @@ fun PhotoWidgetEditorRoot(
         }
     }
 }
+
 
 @Composable
 private fun EditorLoading() {
@@ -136,7 +147,7 @@ private fun EditorTabBar(
     onSelectPhoto: () -> Unit,
     onSelectText: () -> Unit
 ) {
-    TabRow(
+    SecondaryTabRow(
         selectedTabIndex = if (mode == PhotoWidgetMode.PHOTO) 0 else 1,
         modifier = Modifier.fillMaxWidth()
     ) {

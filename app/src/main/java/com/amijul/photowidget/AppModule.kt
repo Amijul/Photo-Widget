@@ -8,7 +8,7 @@ import com.amijul.photowidget.widget.data.PhotoWidgetRepositoryImpl
 import com.amijul.photowidget.widget.domain.PhotoWidgetRepository
 import com.amijul.photowidget.widget.ui.PhotoWidgetViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -20,7 +20,10 @@ val appModule = module {
 
     // Bind repository interface to implementation
     single<PhotoWidgetRepository> {
-        PhotoWidgetRepositoryImpl(get())
+        PhotoWidgetRepositoryImpl(
+            dataStore = get(),
+            appContext = androidContext()
+        )
     }
 
     // ViewModel using repository

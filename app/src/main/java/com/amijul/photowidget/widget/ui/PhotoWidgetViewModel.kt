@@ -10,7 +10,9 @@ import com.amijul.photowidget.widget.domain.PhotoWidgetState
 import com.amijul.photowidget.widget.domain.TextAlignment
 import com.amijul.photowidget.widget.domain.TextState
 import com.amijul.photowidget.widget.domain.TextStyleState
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -31,6 +33,10 @@ class PhotoWidgetViewModel(
 
     private val _uiState = MutableStateFlow(PhotoWidgetUiState())
     val uiState: StateFlow<PhotoWidgetUiState> = _uiState.asStateFlow()
+
+    private val _saveSuccessEvents = MutableSharedFlow<Unit>()
+    val saveSuccessEvents: SharedFlow<Unit> = _saveSuccessEvents
+
 
 
     init {
@@ -184,7 +190,10 @@ class PhotoWidgetViewModel(
             try {
                 repo.saveState(currentState)
                 _uiState.update { it.copy(isSaving = false) }
-                // Activity/Screen decides when to close after observing isSaving -> false
+
+                // 🔔 Notify UI that save completed successfully
+                _saveSuccessEvents.emit(Unit)
+
             } catch (t: Throwable) {
                 _uiState.update {
                     it.copy(
@@ -195,6 +204,7 @@ class PhotoWidgetViewModel(
             }
         }
     }
+
 
     // ---------- Util ----------
 

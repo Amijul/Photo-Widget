@@ -8,5 +8,5 @@ import androidx.datastore.preferences.preferencesDataStore
 
 // Single DataStore for note widget state
 val Context.photoWidgetDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "note_widget_prefs"
+    name = "photo_widget_prefs"
 )

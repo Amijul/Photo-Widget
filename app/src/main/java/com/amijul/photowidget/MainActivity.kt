@@ -4,9 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.glance.appwidget.updateAll
+import androidx.lifecycle.lifecycleScope
 import com.amijul.photowidget.presentation.editor.PhotoWidgetEditorRoot
 import com.amijul.photowidget.ui.theme.PhotoWidgetTheme
+import com.amijul.photowidget.widget.data.PhotoWidgetGlance
 import com.amijul.photowidget.widget.domain.PhotoWidgetMode
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -30,11 +34,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PhotoWidgetTheme {
-                // Root editor composable, ViewModel comes from Koin
                 PhotoWidgetEditorRoot(
-                    initialMode = initialMode
+                    initialMode = initialMode,
+                    onSaved = {
+                        lifecycleScope.launch {
+                            PhotoWidgetGlance().updateAll(this@MainActivity)
+                            finish()
+                        }
+                    }
                 )
             }
         }
+
     }
 }
